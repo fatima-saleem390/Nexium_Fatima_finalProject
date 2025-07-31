@@ -11,33 +11,20 @@ export default function LoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const handleSession = async () => {
-      // ✅ If URL has a magic link hash, exchange it for a session
-      if (window.location.hash) {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href)
-        if (error) {
-          console.error('Error exchanging code:', error.message)
-        }
-      }
-
-      // ✅ Now check if we have an active session
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-
+    // Check if user is already signed in
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
       if (session) {
-        router.push('/') // redirect to home/page.tsx if already signed in
+        router.push('/')
       }
     }
 
-    handleSession()
+    checkSession()
 
-    // ✅ Listen for auth state changes (important for magic link)
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Listen for magic link sign in
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        router.push('/') // redirect if newly signed in
+        router.push('/')
       }
     })
 
@@ -50,12 +37,10 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-    })
+    const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
-      console.error('Login error:', error.message)
+      console.error(error)
       setMessage('❌ Something went wrong, please try again.')
     } else {
       setMessage('✅ Check your email for the magic link!')
@@ -65,18 +50,18 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 border-t-8 border-blue-800">
-        <h1 className="text-3xl font-extrabold text-blue-900 mb-2 text-center">
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border-t-8 border-blue-800">
+        <h1 className="text-3xl font-bold text-center text-blue-900 mb-4">
           Login
         </h1>
-        <p className="text-gray-600 mb-6 text-center">
+        <p className="text-center text-gray-600 mb-6">
           Enter your email to receive a magic link.
         </p>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Email Address
             </label>
             <input
@@ -85,14 +70,14 @@ export default function LoginPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
+              className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-700"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 px-6 rounded-lg shadow transition ${
+            className={`w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-3 rounded-md shadow ${
               loading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -101,7 +86,7 @@ export default function LoginPage() {
         </form>
 
         {message && (
-          <p className="mt-6 text-center text-sm font-medium text-blue-800">
+          <p className="mt-4 text-center text-sm text-blue-800 font-medium">
             {message}
           </p>
         )}

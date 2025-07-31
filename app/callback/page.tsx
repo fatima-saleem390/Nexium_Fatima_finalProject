@@ -1,16 +1,14 @@
-// app/callback/page.tsx
-
 'use client'
 
 import { useEffect } from 'react'
-import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabaseClient'
 
 export default function Callback() {
   const router = useRouter()
 
   useEffect(() => {
-    const handleMagicLink = async () => {
+    const handleCallback = async () => {
       const { error } = await supabase.auth.exchangeCodeForSession(window.location.href)
       if (error) {
         console.error('Error exchanging code:', error)
@@ -19,12 +17,12 @@ export default function Callback() {
       }
     }
 
-    handleMagicLink()
+    handleCallback()
   }, [router])
 
   return (
     <main className="min-h-screen flex items-center justify-center">
-      <p>Logging you in...</p>
+      <p>Signing you in...</p>
     </main>
   )
 }

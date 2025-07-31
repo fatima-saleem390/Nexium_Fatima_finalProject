@@ -28,15 +28,6 @@ export default function AboutPage() {
               Your personal information stays safe with top-notch authentication.
             </p>
           </div>
-
-          {/* Feature 3 */}
-          <div className="bg-blue-50 rounded-lg shadow-md p-6 border-l-4 border-blue-700">
-            <h2 className="text-xl font-bold text-blue-800 mb-2">Personal Dashboard</h2>
-            <p className="text-gray-700">
-              Save and manage your resumes, track applications, and bookmark opportunities.
-              Your personalized dashboard keeps everything organized in one place.
-            </p>
-          </div>
         </div>
       </div>
     </main>

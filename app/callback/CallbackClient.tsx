@@ -1,3 +1,4 @@
+// app/callback/CallbackClient.tsx
 'use client'
 
 import { useEffect } from 'react'

@@ -1,6 +1,5 @@
-// app/callback/page.tsx
 import CallbackClient from './CallbackClient'
 
-export default function CallbackPage() {
+export default function Page() {
   return <CallbackClient />
 }

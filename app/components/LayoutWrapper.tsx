@@ -1,5 +1,3 @@
-// app/components/LayoutWrapper.tsx
-
 'use client'
 
 import { usePathname } from 'next/navigation'
@@ -12,7 +10,7 @@ export default function LayoutWrapper({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const showLayout = pathname !== '/login'
+  const showLayout = pathname !== '/login' && pathname !== '/callback'
 
   return (
     <>

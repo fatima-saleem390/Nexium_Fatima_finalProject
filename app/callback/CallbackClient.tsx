@@ -11,7 +11,8 @@ export default function CallbackClient() {
   useEffect(() => {
     const handleSignIn = async () => {
       const code = searchParams.get('code')
-      const next = searchParams.get('next') || '/dashboard'
+      const next = searchParams.get('next') || '/'
+
 
       if (!code) {
         console.error('No code found in URL')

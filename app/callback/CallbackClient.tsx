@@ -1,4 +1,3 @@
-// app/callback/CallbackClient.tsx
 'use client'
 
 import { useEffect } from 'react'
@@ -36,7 +35,9 @@ export default function CallbackClient() {
     <main className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-2">Logging you in...</h1>
-        <p className="text-gray-600">Please wait while we verify your sign-in link.</p>
+        <p className="text-gray-600">
+          Please wait while we verify your sign-in link.
+        </p>
       </div>
     </main>
   )

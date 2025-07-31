@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
@@ -11,25 +11,40 @@ export default function LoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Handle magic link redirect
-    const hash = window.location.hash
-    const params = new URLSearchParams(hash.substring(1))
-    const access_token = params.get('access_token')
-    const refresh_token = params.get('refresh_token')
-
-    if (access_token && refresh_token) {
-      supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      }).then(({ data, error }) => {
+    const handleSession = async () => {
+      // ✅ If URL has a magic link hash, exchange it for a session
+      if (window.location.hash) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.href)
         if (error) {
-          console.error('Error saving session:', error)
-        } else {
-          router.replace('/') // or your app's page
+          console.error('Error exchanging code:', error.message)
         }
-      })
+      }
+
+      // ✅ Now check if we have an active session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (session) {
+        router.push('/') // redirect to home/page.tsx if already signed in
+      }
     }
-  }, [])
+
+    handleSession()
+
+    // ✅ Listen for auth state changes (important for magic link)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        router.push('/') // redirect if newly signed in
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +55,7 @@ export default function LoginPage() {
     })
 
     if (error) {
-      console.error(error)
+      console.error('Login error:', error.message)
       setMessage('❌ Something went wrong, please try again.')
     } else {
       setMessage('✅ Check your email for the magic link!')
@@ -50,22 +65,46 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md">
-        <h1>Login</h1>
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            required
-            placeholder="Your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button type="submit" disabled={loading}>
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 border-t-8 border-blue-800">
+        <h1 className="text-3xl font-extrabold text-blue-900 mb-2 text-center">
+          Login
+        </h1>
+        <p className="text-gray-600 mb-6 text-center">
+          Enter your email to receive a magic link.
+        </p>
+
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-700 transition"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 px-6 rounded-lg shadow transition ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
             {loading ? 'Sending...' : 'Send Magic Link'}
           </button>
         </form>
-        {message && <p>{message}</p>}
+
+        {message && (
+          <p className="mt-6 text-center text-sm font-medium text-blue-800">
+            {message}
+          </p>
+        )}
       </div>
     </main>
   )

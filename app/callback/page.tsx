@@ -1,17 +1,17 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 
-export default function Callback() {
+function CallbackContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const handleSignIn = async () => {
       const code = searchParams.get('code')
-      const next = searchParams.get('next') || '/dashboard' // fallback redirect
+      const next = searchParams.get('next') || '/dashboard'
 
       if (!code) {
         console.error('No code found in URL')
@@ -38,5 +38,13 @@ export default function Callback() {
         <p className="text-gray-600">Please wait while we verify your sign-in link.</p>
       </div>
     </main>
+  )
+}
+
+export default function CallbackPage() {
+  return (
+    <Suspense>
+      <CallbackContent />
+    </Suspense>
   )
 }

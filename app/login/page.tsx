@@ -12,75 +12,80 @@ export default function LoginPage() {
 
   useEffect(() => {
     const handleMagicLink = async () => {
+      console.log('🚀 Checking URL for magic link...')
       if (typeof window !== 'undefined' && window.location.hash) {
-        console.log('🔍 [handleMagicLink] Checking URL hash...')
         const hash = window.location.hash.substring(1)
+        console.log('🔍 Found hash:', hash)
         const params = new URLSearchParams(hash)
         const access_token = params.get('access_token')
         const refresh_token = params.get('refresh_token')
 
+        console.log('👉 Extracted access_token:', access_token)
+        console.log('👉 Extracted refresh_token:', refresh_token)
+
         if (access_token && refresh_token) {
-          console.log('✅ [handleMagicLink] Found tokens, setting session...')
+          console.log('✅ Found tokens, calling setSession...')
           const { data, error } = await supabase.auth.setSession({
             access_token,
             refresh_token,
           })
+
+          console.log('👉 setSession data:', data)
           if (error) {
-            console.error('❌ [handleMagicLink] Error setting session:', error)
+            console.error('❌ setSession error:', error)
           } else {
-            console.log('✅ [handleMagicLink] Session set:', data)
-            router.push('/') // redirect to main page
+            console.log('✅ Session set! Redirecting to /')
+            router.push('/')
           }
         } else {
-          console.log('❌ [handleMagicLink] No tokens found in URL hash.')
+          console.log('❌ Tokens not found in hash')
         }
       }
     }
 
     const checkSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession()
-      console.log('✅ [checkSession] Supabase session:', session)
-      if (error) console.error('❌ [checkSession] Error:', error)
+      console.log('🔎 Current session:', session)
+      if (error) console.error('❌ Error getting session:', error)
 
       if (session) {
-        console.log('✅ [checkSession] Session found — redirecting to /')
+        console.log('✅ Session found, redirecting to /')
         router.push('/')
       } else {
-        console.log('❌ [checkSession] No session — staying on login')
+        console.log('❌ No session found')
       }
     }
 
     handleMagicLink().then(checkSession)
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`🌀 [onAuthStateChange] Event: ${event}`)
-      console.log('🌀 [onAuthStateChange] Session:', session)
+      console.log(`🌀 Auth event: ${event}`)
       if (session) {
-        console.log('✅ [onAuthStateChange] Session found — redirecting to /')
+        console.log('✅ Session in onAuthStateChange — redirecting')
         router.push('/')
       } else {
-        console.log('❌ [onAuthStateChange] No session on auth change')
+        console.log('❌ No session in onAuthStateChange')
       }
     })
 
     return () => {
       subscription.unsubscribe()
-      console.log('🔌 [onAuthStateChange] Subscription cleaned up')
+      console.log('🔌 Unsubscribed onAuthStateChange')
     }
   }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    console.log('📧 [handleLogin] Sending magic link to:', email)
+    console.log('📧 Sending magic link to:', email)
 
     const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
-      console.error('❌ [handleLogin] Error:', error)
+      console.error('❌ Magic link error:', error)
       setMessage('❌ Something went wrong, please try again.')
     } else {
-      console.log('✅ [handleLogin] Magic link sent!')
+      console.log('✅ Magic link sent!')
       setMessage('✅ Check your email for the magic link!')
     }
 

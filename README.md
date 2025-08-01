@@ -1,30 +1,33 @@
 # Nexium — Final Project
 
-This is **Nexium**, a modern Next.js application created as my final project. It features secure authentication, AI-powered resume tools, and a user-friendly dashboard for job seekers.
+**Nexium** is a modern web application built with **Next.js**, designed as my final project. It empowers job seekers with secure authentication, AI-powered resume customization, and a user-friendly dashboard to manage and track job applications easily.
 
 ---
 
-## 📌 **Features**
+## ✨ Features
 
-- ✨ **AI Resume Tailoring** — Instantly adjust your resume to match any job description.
-- 🔒 **Secure Login** — Passwordless authentication with magic links.
-- 📂 **Application Tracker** — Keep track of all your job applications in one place.
+- **AI Resume Tailoring:** Instantly adapt your resume to match any job description with smart AI suggestions.
+- **Secure Login:** Passwordless authentication using magic links via Supabase.
+- **Application Tracker:** Organize and monitor all your job applications in one place.
 
 ---
 
-## 🚀 **Tech Stack**
+## 🚀 Tech Stack
 
 - **Framework:** Next.js 15+
 - **Styling:** Tailwind CSS
-- **Backend:** Supabase for auth & database
+- **Backend:** Supabase (authentication & database)
 - **Language:** TypeScript
 - **Deployment:** Vercel (recommended)
 
 ---
 
-## ⚙️ **Getting Started**
+## ⚙️ Getting Started
 
-### 1️⃣ **Clone the repository**
+Follow these steps to set up and run the project locally:
+
+### 1️⃣ Clone the repository
+
 ```bash
 git clone https://github.com/fatima-saleem390/Nexium_Fatima_finalProject.git
 cd Nexium_Fatima_finalProject
@@ -34,9 +37,9 @@ Copy
 Edit
 npm install
 3️⃣ Set up environment variables
-Create a .env.local file and add your Supabase keys, like:
+Create a .env.local file in the root directory and add your Supabase credentials:
 
-bash
+env
 Copy
 Edit
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -46,49 +49,24 @@ bash
 Copy
 Edit
 npm run dev
-Visit http://localhost:3000 to view your app.
+Open http://localhost:3000 in your browser to see the app.
 
 🗂️ Project Structure
 ruby
 Copy
 Edit
 /
-├── app/           # Next.js app directory
-├── components/    # Shared UI components
-├── lib/           # Supabase client, helpers
-├── public/        # Static assets
-├── styles/        # Global styles
-├── .next/         # Next.js build output (ignored)
-├── node_modules/  # Project dependencies (ignored)
+├── app/             # Next.js App Router directory
+├── components/      # Reusable UI components
+├── lib/             # Supabase client and helper functions
+├── public/          # Static assets
+├── styles/          # Global styles
+├── .next/           # Next.js build output (ignored)
+├── node_modules/    # Installed dependencies (ignored)
 └── ...
-✅ To Do
- Add more features to the dashboard.
-
- Improve AI resume suggestions.
-
- Write more tests.
 
 📄 License
-This project is for educational purposes.
+This project is for educational purposes only and not licensed for commercial use.
 
 🤝 Author
 Fatima Saleem
-GitHub
-
-Happy coding! 🚀
-
-yaml
-Copy
-Edit
-
----
-
-### 🔑 **How to use it**
-
-1. Save this as `README.md` in your project root.
-2. Adjust any section: project name, features, or your links.
-3. Commit it:
-   ```bash
-   git add README.md
-   git commit -m "Add project README"
-   git push

@@ -11,38 +11,50 @@ export default function LoginPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already signed in
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error } = await supabase.auth.getSession()
+      console.log('✅ [checkSession] Supabase session:', session)
+      if (error) console.error('❌ [checkSession] Error:', error)
+
       if (session) {
+        console.log('✅ [checkSession] Session found — redirecting to /')
         router.push('/')
+      } else {
+        console.log('❌ [checkSession] No session — staying on login')
       }
     }
 
     checkSession()
 
-    // Listen for magic link sign in
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`🌀 [onAuthStateChange] Event: ${event}`)
+      console.log('🌀 [onAuthStateChange] Session:', session)
       if (session) {
+        console.log('✅ [onAuthStateChange] Session found — redirecting to /')
         router.push('/')
+      } else {
+        console.log('❌ [onAuthStateChange] No session on auth change')
       }
     })
 
     return () => {
       subscription.unsubscribe()
+      console.log('🔌 [onAuthStateChange] Subscription cleaned up')
     }
   }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    console.log('📧 [handleLogin] Sending magic link to:', email)
 
     const { error } = await supabase.auth.signInWithOtp({ email })
 
     if (error) {
-      console.error(error)
+      console.error('❌ [handleLogin] Error:', error)
       setMessage('❌ Something went wrong, please try again.')
     } else {
+      console.log('✅ [handleLogin] Magic link sent!')
       setMessage('✅ Check your email for the magic link!')
     }
 
